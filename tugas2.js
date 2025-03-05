@@ -52,29 +52,52 @@ function getWinner(player, computer) {
     }
 }
 
-function playTheGame(player) {
-    const generateRandomNumber = Math.floor(Math.random() * choices.length);
-    const computerChoice = choices[[generateRandomNumber]];
-    console.log(computerChoice)
+function playTheGame() {
+    let playerScore = 0;
+    let computerScore = 0;
 
-    rl.question("Silahkan pilih pilihan anda (Gunting/1, Batu/2, Kertas/3):", function (input){
-        const playerChoice = getChoiceName(input)
-        console.log(playerChoice)
+    function playRound() { //Penambahan fitur score dan menampilkan pilihan computer
+        const generateRandomNumber = Math.floor(Math.random() * choices.length);
+        const computerChoice = choices[generateRandomNumber];
 
-        if (!playerChoice) {
-            console.log("Pilihan tidak valid");
-            return playTheGame();
-        }
-    
-    console.log(`Player choose ${playerChoice.name}`);
-    console.log(`Computer choose ${computerChoice.name}`);
+        rl.question("Silahkan pilih pilihan anda (Gunting/1, Batu/2, Kertas/3):", function (input) {
+            const playerChoice = getChoiceName(input);
 
-    const result = getWinner(playerChoice, computerChoice);
-    console.log(`You ${result}`);
-    
-    
-    })
+            if (!playerChoice) {
+                console.log("Pilihan tidak valid");
+                return playRound(); // Ulangi ronde jika input tidak valid
+            }
+
+            console.log(`Player memilih ${playerChoice.name}`);
+            console.log(`Computer memilih ${computerChoice.name}`);
+
+            const result = getWinner(playerChoice, computerChoice);
+            console.log(`You ${result}`);
+
+            if (result === "win") {
+                playerScore++;
+            } else if (result === "lose") {
+                computerScore++;
+            }
+
+            console.log(`Score: Player ${playerScore} - Computer ${computerScore}`);
+
+            if (playerScore === 3 || computerScore === 3) { // Menentukan pemenang Berdasarkan score
+                if (playerScore === 3) {
+                    console.log("Game Over! Player menang!");
+                } else {
+                    console.log("Game Over! Computer menang!");
+                }
+                rl.close();
+            } else {
+                playRound(); // Lanjut ke ronde berikutnya
+            }
+        });
+    }
+
+    playRound(); // Mulai ronde pertama
 }
+
 
 playTheGame();
 
